@@ -1,19 +1,25 @@
 var stateList = [];
 
-function coord(x, y) {
-	this.x = x;
-	this.y = y;
+//Modificar a class poner constructor
+class coord{
+	constructor(x,y){
+		this.x = x;
+		this.y = y;
+	}
 }
 
-function state(id, name, coord, radius, end, start, transitionsIn, transitionsOut) {
-	this.id = id;
-	this.name = name;
-	this.coord = coord;
-	this.radius = radius;
-	this.end = end;
-	this.start = start;
-	this.transitionsIn = transitionsIn;
-	this.transitionsOut = transitionsOut;
+//Modificar a class poner constructor
+class state{
+	constructor(id, name, coord, radius, end, start, transitionsIn, transitionsOut){
+		this.id = id;
+		this.name = name;
+		this.coord = coord;
+		this.radius = radius;
+		this.end = end;
+		this.start = start;
+		this.transitionsIn = transitionsIn;
+		this.transitionsOut = transitionsOut;
+	}
 }
 
 function createState() {
@@ -48,12 +54,10 @@ function isSelected(state) {
 	return (selectedState.id == state.id && selectedState.selecting);
 }
 
+//Modificado
 function getSelectedState() {
-	if (selectedState.id == -1) {
-		return null;
-	}
-
-	return stateList[selectedState.id];
+	var id = selectedState.id;
+	return this.id == -1 ? null: stateList[selectedState.id];
 }
 
 function moveStateByCursor(state) {
@@ -81,42 +85,28 @@ function setFinalState() {
 	var state = getSelectedState();
 	if (!state) {
 		return;
-	}	
-
+	}
 	state.end = !state.end;
 }
 
+//Modificado
 function setInitialState() {
 	var state = getSelectedState();
 	if (!state) {
 		return;
 	}
-
-	for (var i = 0; i < stateList.length; i++) {
-		stateList[i].start = false;
-	}
-
+	stateList.map( x => x.start = false);
 	state.start = true;
 }
 
+//Modificado
 function getInitialState() {
-	for (var i = 0; i < stateList.length; i++) {
-		if (stateList[i].start) {
-			return stateList[i];
-		}
-	}
-
-	return null;
+	return stateList.find(x => x.start == true);
 }
 
+//Modificado
 function getStateByID(id) {
-	for (var i = 0; i < stateList.length; i++) {
-		if (stateList[i].id == id) {
-			return stateList[i];
-		}
-	}
-
-	return null;
+	return stateList.find(x => x.id == id);
 }
 
 function removeState(stateID) {
