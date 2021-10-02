@@ -109,26 +109,20 @@ function getStateByID(id) {
 	return stateList.find(x => x.id == id);
 }
 
+//Commit
 function removeState(stateID) {
 	if (stateID == -1) {
 		return;
-	}
+	} 
 
 	var state = getStateByID(stateID);
 
-	for (var i = 0; i < state.transitionsOut.length; i++) {
-		removeTransition(state.transitionsOut[i].id);
-	}
+	state.transitionsOut.forEach(element => { removeTransition(element.id);});
+	state.transitionsIn.forEach(element => { removeTransition(element.id);});
 
-	for (var i = 0; i < state.transitionsIn.length; i++) {
-		removeTransition(state.transitionsIn[i].id);
-	}
-
-	var index = 0;
+	
 	stateList.splice(stateID, 1);
-	for (var i = stateID; i < stateList.length; i++) {
-		stateList[i].id = i;
-	}
+	stateList.filter(x => x.id > stateID).map(x => x.id = x.id -1);
 }
 
 function typeStateName(symbol) {
@@ -150,12 +144,7 @@ function typeStateName(symbol) {
 	}
 }
 
+//commit
 function isThereFinalState() {
-	for (var i = 0; i < stateList.length; i++) {
-		if (stateList[i].end) {
-			return true;
-		}
-	}
-
-	return false;
+	return stateList.find(x => x.end == true) ? true : false;
 }
