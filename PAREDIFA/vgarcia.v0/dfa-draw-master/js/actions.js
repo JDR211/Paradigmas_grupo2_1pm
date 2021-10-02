@@ -22,15 +22,17 @@ class state{
 	}
 }
 
+//commit
 function createState() {
-	stateList[stateList.length] = new state(stateList.length,
+	stateList.push(new state(stateList.length,
 		stateList.length.toString(),
 		new coord(mousePos.x, mousePos.y),
 		20,
 		false,
 		false,
 		[],
-		[]);
+		[])
+	);
 }
 
 function selectState(state) {
