@@ -210,3 +210,12 @@ function validateInput() {
 	$("#run-button").prop("disabled", !result);
 	return result;
 }
+function about(){
+	var txt = "<br><p>Integrantes:</p>";
+	txt += "<p>José Rodriguez<br>";
+	txt += "Kevin Gomez<br>";
+	txt += "Alberto Conejo<br>";
+	txt += "Keylor Barrantes<br>";
+	txt += "Paradigmas G02 1pm</p>";
+	$("#about").html(txt);
+}
