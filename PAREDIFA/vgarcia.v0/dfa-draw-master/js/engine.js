@@ -1,8 +1,12 @@
-function frameInfo(stateID, transitionID) {
-	this.stateID = stateID;
-	this.transitionID = transitionID;
+//commit
+class frameInfo{
+	constructor(stateID, transitionID) {
+		this.stateID = stateID;
+		this.transitionID = transitionID;
+	}
 }
 
+//commit
 function run() {
 	var input = document.getElementById("input-word").value;
 	runInfo.input = input;
@@ -14,30 +18,24 @@ function run() {
 
 	var queue = [];
 
-	while (input != "") {
-		var current_symbol;
-		current_symbol = input[0];
+	input.split('').forEach(element => {
 		queue.push(new frameInfo(currentState.id, null));
-
-		for (var i = 0; i < currentState.transitionsOut.length; i++) {
-			for (var j = 0; j < currentState.transitionsOut[i].symbols.length; j++) {
-				if (currentState.transitionsOut[i].symbols[j] == current_symbol) {
-					nextState = currentState.transitionsOut[i].state_dst;
-					queue.push(new frameInfo(null, currentState.transitionsOut[i].id));
-					break;
+		currentState.transitionsOut.forEach(x =>  {
+			x.symbols.forEach(y => {
+				if(y == element){
+					nextState = x.state_dst;
+					queue.push(new frameInfo(null, x.id));
 				}
-			}
-		}
-
-		currentState = nextState;		
-
-		input = input.substring(1, input.length);
-	}
-
+			})
+		});
+		currentState = nextState;
+	})
+	
 	queue.push(new frameInfo(currentState.id, null));
 
 	runAnimation(queue);
 }
+
 
 function runAnimation(queue) {
 	runInfo.nowRunning = true;

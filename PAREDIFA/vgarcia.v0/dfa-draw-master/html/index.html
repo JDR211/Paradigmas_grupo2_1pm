@@ -16,20 +16,24 @@
 <body>
 <div id = "wrapper">
 	<div id="c1">
-	<input type="text" id="alphabet"> <input type="submit" class="button" value="Alfabeto" onclick="setAlphabet()">  (e.g.: "1, 0")<br> 
+	<input type="text" id="alphabet"> <input type="submit" class="button" value="setAlphabet" onclick="setAlphabet()">  (e.g.: "1, 0")<br> 
 	<input type="text" id="json-area">
 	<input type="submit" class="button" value="Download JSON" onclick="exportJson()">
 	<input type="submit" class="button" value="Upload JSON" onclick="importJson()"><br>
 	<div id="instructions">
 	<br>
-	<b>CREATE STATE (Q key):</b> create a state on the mouse position.<br>
-	<b>SELECT TRANSITION / STATE:</b> left-click on a state or transition.<br>
+	<b>1.set alphabet:</b> write alphabet(e.g : 1,0) and press setAlphabet.<br>
+	<b>2.CREATE STATE (Q key):</b> press q on the mouse position in the  lightslategrey area.<br>
+	<b>3.SELECT TRANSITION / STATE:</b> left-click on a state or transition.<br>
+	<b>4.CREATE TRANSITION (E key):</b> once a state is selected, press E and select another state.<br>
+	<b>5.SET INITIAL STATE (S key):</b> once a state is selected, press S to set it as the start state.<br>
+	<b>6.SET FINAL STATE (F key):</b> once a state is selected, press F to set it as a final state.<br>
+	<b>7.Word:</b> write the word(e.g : 101) and press Run.<br>
 	<b>MOVE STATE:</b> hold left-click on a state and move the cursor.<br>
-	<b>CREATE TRANSITION (E key):</b> once a state is selected, press E and select another state.<br>
 	<b>REMOVE TRANSITION / STATE (DEL key):</b> once a state or transition is selected, press DEL to remove it.<br>
 	<b>RENAME STATE (R key):</b> once a state is selected, press R to enter the renaming mode. In the renaming mode, press ENTER to set the state name.<br>
-	<b>SET FINAL STATE (F key):</b> once a state is selected, press F to set it as a final state.<br>
-	<b>SET INITIAL STATE (S key):</b> once a state is selected, press S to set it as the start state.<br>
+	
+	
 	</div>
 	</div>
 	<div id = "c2">

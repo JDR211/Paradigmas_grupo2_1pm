@@ -279,6 +279,7 @@ div {
 #c2 {
     margin: 5px 0;
     width: calc(100% - 620px);
+    background-color: lightslategrey;
 }
 #c3 {
     margin: 5px;
