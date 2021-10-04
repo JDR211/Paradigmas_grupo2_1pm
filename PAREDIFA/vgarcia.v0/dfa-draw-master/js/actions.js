@@ -1,6 +1,7 @@
+//Eliminar variable global usar hooks
 var stateList = [];
 
-//Modificar a class poner constructor
+//Commit
 class coord{
 	constructor(x,y){
 		this.x = x;
@@ -8,7 +9,7 @@ class coord{
 	}
 }
 
-//Modificar a class poner constructor
+//commit, usar hooks para estado no mutable
 class state{
 	constructor(id, name, coord, radius, end, start, transitionsIn, transitionsOut){
 		this.id = id;
@@ -35,81 +36,61 @@ function createState() {
 	);
 }
 
+//commit, usar estado no mutable 
 function selectState(state) {
-	if (selectedState.adding_transition) {
-		createTransition();
-		return;
-	}
-
-	selectedState.id = state.id;
-	selectedState.selecting = true;
-	selectedState.moving = true;
+	selectedState.adding_transition ?
+		createTransition() : (
+		selectedState.id = state.id,
+		selectedState.selecting = true,
+		selectedState.moving = true
+		);
 }
 
+//Usar estado no mutable
 function resetSelectedState() {
 	selectedState.id = -1;
 	selectedState.selecting = false;
 	selectedState.naming = false;
 }
 
-function isSelected(state) {
-	return (selectedState.id == state.id && selectedState.selecting);
-}
+//commit
+var isSelected = state => selectedState.id == state.id && selectedState.selecting;
 
-//Modificado
-function getSelectedState() {
-	var id = selectedState.id;
-	return this.id == -1 ? null: stateList[selectedState.id];
-}
 
+//commit
+var  getSelectedState = () => selectedState.id == -1 ? null : stateList[selectedState.id];
+
+//commit
 function moveStateByCursor(state) {
 	state.coord.x = mousePos.x;
 	state.coord.y = mousePos.y;		
 	
-	if (state.coord.x + state.radius > canvas.width) {
-		state.coord.x = canvas.width - state.radius;
-	}
-
-	if (state.coord.x - state.radius < 0) {
-		state.coord.x = state.radius;
-	}
-
-	if (state.coord.y + state.radius > canvas.height) {
-		state.coord.y = canvas.height - state.radius;
-	}
-
-	if (state.coord.y - state.radius < 0) {
-		state.coord.y = state.radius;
-	}
+	state.coord.x + state.radius > canvas.width ? state.coord.x = canvas.width - state.radius : undefined;
+	state.coord.x - state.radius < 0 ? state.coord.x = state.radius : undefined;
+	state.coord.y + state.radius > canvas.height ? state.coord.y = canvas.height - state.radius : undefined;
+	state.coord.y - state.radius < 0 ? state.coord.y = state.radius : undefined;
 }
 
-function setFinalState() {
+//commit, usar estado no mutable
+var setFinalState = () => { 
 	var state = getSelectedState();
-	if (!state) {
-		return;
-	}
-	state.end = !state.end;
-}
+	!state ? undefined : state.end = !state.end 
+};
 
-//Modificado
-function setInitialState() {
+//commit, usar estado no mutable (hooks)
+var setInitialState = () => { 
 	var state = getSelectedState();
-	if (!state) {
-		return;
-	}
-	stateList.map( x => x.start = false);
-	state.start = true;
+	!state ? undefined : (
+		stateList.map( x => x.start = false),
+		state.start = true
+	)
 }
 
-//Modificado
-function getInitialState() {
-	return stateList.find(x => x.start == true);
-}
+//commit
+var getInitialState = () => stateList.find(x => x.start == true);
 
-//Modificado
-function getStateByID(id) {
-	return stateList.find(x => x.id == id);
-}
+//commit
+var getStateByID = (id) => stateList.find(x => x.id == id);
 
 //Commit
 function removeState(stateID) {
@@ -121,7 +102,6 @@ function removeState(stateID) {
 
 	state.transitionsOut.forEach(element => { removeTransition(element.id);});
 	state.transitionsIn.forEach(element => { removeTransition(element.id);});
-
 	
 	stateList.splice(stateID, 1);
 	stateList.filter(x => x.id > stateID).map(x => x.id = x.id -1);
@@ -147,6 +127,4 @@ function typeStateName(symbol) {
 }
 
 //commit
-function isThereFinalState() {
-	return stateList.find(x => x.end == true) ? true : false;
-}
+var isThereFinalState = () => stateList.find(x => x.end == true) ? true : false;
