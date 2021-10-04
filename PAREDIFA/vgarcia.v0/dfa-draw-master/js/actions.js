@@ -107,23 +107,15 @@ function removeState(stateID) {
 	stateList.filter(x => x.id > stateID).map(x => x.id = x.id -1);
 }
 
+//commit
 function typeStateName(symbol) {
 	var state = getStateByID(selectedState.id);
 
-	if (state == null) {
-		return;
-	}
-
-	if (symbol == "backspace") {
-		if (state.name.length > 0) {
-			state.name = state.name.slice(0, state.name.length - 1);
-		}
-		return;
-	}
-	
-	if (state.name.length < 4) {
-		state.name = state.name.concat(symbol);
-	}
+	!state ? undefined : symbol == "backspace" ? 
+		state.name.length > 0 ? 
+			state.name = state.name.slice(0, state.name.length - 1) : undefined 
+		: state.name.length < 4 ? 
+			state.name = state.name.concat(symbol): undefined; 
 }
 
 //commit
