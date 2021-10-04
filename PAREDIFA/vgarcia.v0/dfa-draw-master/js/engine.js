@@ -1,4 +1,4 @@
-//commit
+//commit, usar hooks
 class frameInfo{
 	constructor(stateID, transitionID) {
 		this.stateID = stateID;
@@ -6,17 +6,16 @@ class frameInfo{
 	}
 }
 
-//commit
+//commit, usar esatdo no mutable
 function run() {
 	var input = document.getElementById("input-word").value;
 	runInfo.input = input;
 
 	var currentState = getInitialState();
 	var nextState = null;
+	var queue = [];
 
 	validateInput();
-
-	var queue = [];
 
 	input.split('').forEach(element => {
 		queue.push(new frameInfo(currentState.id, null));
@@ -32,42 +31,37 @@ function run() {
 	})
 	
 	queue.push(new frameInfo(currentState.id, null));
-
 	runAnimation(queue);
 }
 
-
+//commit, usar estado no mutable
 function runAnimation(queue) {
 	runInfo.nowRunning = true;
 	runInfo.currentChar = 0;
 
-	var timeSkipAmount = 800;
+	var timeSkipAmount = 600;
 	var timeSkipCount = 0;
 
-	var framecount = 0;
-	for (var i = 0; i < queue.length; i++) {
-		setTimeout(function() {
-			var frame = queue[framecount];
-			framecount++;
+	queue.forEach( frame => setTimeout(
+		() => {  
+			frame.stateID != null ? (
+				runInfo.transitionID = null,
+				runInfo.stateID = frame.stateID) : undefined;
 
-			if (frame.stateID != null) {
-				runInfo.transitionID = null;
-				runInfo.stateID = frame.stateID;
-			}
-			if (frame.transitionID != null) {
-				runInfo.transitionID = frame.transitionID;
-				runInfo.stateID = null;
-				runInfo.currentChar++;
-			}
+			frame.transitionID != null ? (
+				runInfo.transitionID = frame.transitionID,
+				runInfo.stateID = null,
+				runInfo.currentChar++) : undefined;
 
-		}, timeSkipAmount * timeSkipCount++);
-	}
+		},timeSkipAmount * timeSkipCount++)
+	);
 
-	setTimeout(function() {
+	setTimeout( () =>{
 		runInfo.nowRunning = false;
-		logResult(getStateByID(queue[queue.length - 1].stateID).name, 
-			getStateByID(queue[queue.length - 1].stateID).end);
-	}, timeSkipAmount * timeSkipCount++);
+		var state_final = getStateByID(queue.pop().stateID);
+		logResult(state_final.name, state_final.end);	
+		}, timeSkipAmount * timeSkipCount++
+	);
 }
 
 function isAutomataComplete() {
