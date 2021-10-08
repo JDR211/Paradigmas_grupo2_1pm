@@ -1,23 +1,13 @@
+//Eliminar variable global usar 
 var mousePos = {x: 0, y: 0};
 
 function onMouseMove(e) {
 	mousePos = getCursorPosition(e);
 	var state = getSelectedState();
 
-	if (getHoverState() == null) {
-		updateHoveredTransition();
-	}
-	else {
-		hoveredTransition = null;
-	}
+	getHoverState() == null ? updateHoveredTransition() : hoveredTransition = null;
 
-	if (runInfo.nowRunning) {
-		return;
-	}
-
-	if (state && selectedState.moving) {
-		moveStateByCursor(state);
-	}
+    runInfo.nowRunning  ? undefined : state && selectedState.moving ? moveStateByCursor(state): undefined;
 }
 
 function onMouseDown(e) {
