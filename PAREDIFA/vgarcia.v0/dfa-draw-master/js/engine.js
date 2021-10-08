@@ -44,14 +44,16 @@ function runAnimation(queue) {
 
 	queue.forEach( frame => setTimeout(
 		() => {  
-			frame.stateID != null ? (
-				runInfo.transitionID = null,
-				runInfo.stateID = frame.stateID) : undefined;
-
-			frame.transitionID != null ? (
-				runInfo.transitionID = frame.transitionID,
-				runInfo.stateID = null,
-				runInfo.currentChar++) : undefined;
+			frame.stateID != null ? 
+				(
+					runInfo.transitionID = null,
+					runInfo.stateID = frame.stateID 
+				) : 
+				(
+					runInfo.transitionID = frame.transitionID,
+					runInfo.stateID = null,
+					runInfo.currentChar++
+				);
 
 		},timeSkipAmount * timeSkipCount++)
 	);
@@ -64,35 +66,32 @@ function runAnimation(queue) {
 	);
 }
 
+//Commit, cambiara a variables no mutables
 function isAutomataComplete() {
-	var exitSymbols = [];
+	var exitSymbols = alphabet.sort();
 	var result = true;
 	var error = "";
-
-	for (var i = 0; i < stateList.length; i++) {
-		exitSymbols = alphabet.slice();
-
-		for (var j = 0; j < stateList[i].transitionsOut.length; j++) {
-			for (var k = 0; k < stateList[i].transitionsOut[j].symbols.length; k++) {
-				var aux = exitSymbols.indexOf(stateList[i].transitionsOut[j].symbols[k]);
-				if (aux != -1) {
-					exitSymbols.splice(aux, 1);
-				}
-			}
+	var aux = [];
+	
+	stateList.forEach(
+		st => { st.transitionsOut.forEach(
+			tr => tr.symbols.forEach(
+				x => aux.unshift(x)
+			)
+		);
+		aux.sort().join() ==  exitSymbols.join() ? undefined : (
+			error += "state #" + st.id + " has no exit transition containing the symbols.<br>",
+			result = false
+		);
+		aux = [];
 		}
+	)
 
-		if (exitSymbols.length != 0) {
-			error += "state #" + stateList[i].id + " has no exit transition containing the symbols " + exitSymbols + ".<br>";
-			result = false;
-		}
-	}
-
-	if (!result) {
-		logError("AUTOMATA NOT COMPLETE", error);
-	}
+	!result ? logError("AUTOMATA NOT COMPLETE", error) : undefined;
 	return result;
 }
 
+//commit, usar estado no mutable
 function setAlphabet() {
 	restart();
 
@@ -105,19 +104,9 @@ function setAlphabet() {
 	}
 
 	alphabet = [];
-	while (aux != "") {
-		var symbol = aux[0];
 
-		if (alphabet.indexOf(symbol) != -1) {
-			return;
-		}
-
-		if (symbol != "," && symbol != " ") {
-			alphabet[alphabet.length] = symbol;
-		}
-
-		aux = aux.substring(1, aux.length);
-	}
+	aux.split(',').forEach(s => 
+		alphabet.indexOf(s) != -1 ? undefined : (s != " ") ? alphabet.push(s): undefined)
 
 	$("#canvas").show();
 }

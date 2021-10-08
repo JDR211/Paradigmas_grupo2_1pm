@@ -1,19 +1,25 @@
 var jsonArea = document.getElementById("json-area");
 
-function Serialized_state(id, name, coord, radius, end, start) {
-	this.id = id;
-	this.name = name;
-	this.coord = coord;
-	this.radius = radius;
-	this.end = end;
-	this.start = start;
+//Commit, usar estado no mutable
+class Serialized_state{
+	constructor(id, name, coord, radius, end, start) {
+		this.id = id;
+		this.name = name;
+		this.coord = coord;
+		this.radius = radius;
+		this.end = end;
+		this.start = start;
+	}
 }
 
-function Serialized_transition(id, state_src_id, state_dst_id, symbols) {
-	this.id = id;
-	this.state_src_id = state_src_id;
-	this.state_dst_id = state_dst_id;
-	this.symbols = symbols;
+//commit, usar hooks
+class Serialized_transition{
+	constructor(id, state_src_id, state_dst_id, symbols) {
+		this.id = id;
+		this.state_src_id = state_src_id;
+		this.state_dst_id = state_dst_id;
+		this.symbols = symbols;
+	}
 }
 
 function importJson() {
@@ -21,6 +27,7 @@ function importJson() {
 	setJson(json);
 }
 
+//commit
 function setJson(json) {
 	if (json != "") {
 		json = JSON.parse(json);
@@ -31,27 +38,16 @@ function setJson(json) {
 
 		transitionList = [];
 
-		for (var i = 0; i < stateList.length; i++) {
-			stateList[i].transitionsIn = [];
-			stateList[i].transitionsOut = [];
-		}
-
-		for (var i = 0; i < json.transitions.length; i++) {
-			var state_src = getStateByID(json.transitions[i].state_src_id);
-			var state_dst = getStateByID(json.transitions[i].state_dst_id);
-			var tr = new transition(json.transitions[i].id,
-				state_src,
-				state_dst,
-				json.transitions[i].symbols);
-
+		stateList.forEach(st => { st.transitionsIn = []; st.transitionsOut = [];});
+			
+		json.transitions.forEach(st => {
+			var state_src = getStateByID(st.state_src_id);
+			var state_dst = getStateByID(st.state_dst_id); 
+			var tr = new transition(st.id,state_src,state_dst,st.symbols);
 			transitionList.push(tr);
-			if (!stateContainsTransition(state_src.id, tr.id)) {
-				state_src.transitionsOut.push(tr);
-			}
-			if (!stateContainsTransition(state_dst.id, tr.id)) {
-				state_dst.transitionsIn.push(tr);
-			}
-		}
+			!stateContainsTransition(state_src.id, tr.id) ? state_src.transitionsOut.push(tr) : undefined;
+			!stateContainsTransition(state_dst.id, tr.id) ? state_dst.transitionsIn.push(tr) : undefined;
+		})
 	}
 }
 
@@ -59,26 +55,17 @@ function getJson() {
 	var json_states = [];
 	var json_transitions = [];
 
-	for (var i = 0; i < stateList.length; i++) {
-		var state = stateList[i];
-		json_states.push(new Serialized_state(state.id,
-			state.name,
-			state.coord,
-			state.radius,
-			state.end,
-			state.start));
-	}
+	stateList.forEach(st => {
+		json_states.push(new Serialized_state(st.id,st.name,st.coord,st.radius,st.end,st.start));
+	})
 
-	for (var i = 0; i < transitionList.length; i++) {
-		var transition = transitionList[i];
-		json_transitions.push(new Serialized_transition(transition.id,
-			transition.state_src.id,
-			transition.state_dst.id,
-			transition.symbols));
-	}
+	transitionList.forEach(tr => {
+		json_transitions.push(new Serialized_transition(tr.id,tr.state_src.id,tr.state_dst.id,tr.symbols));
+	})
 
 	var json = {alphabet: alphabet, states: json_states, transitions: json_transitions};
-	return JSON.stringify(json);;
+
+	return JSON.stringify(json);
 }
 
 function exportJson() {
